@@ -1,6 +1,6 @@
 import type { Admonition as AdmonitionSpec } from 'myst-spec';
 import React from 'react';
-import type { NodeRenderer } from '@myst-theme/providers';
+import { type NodeRenderer, useFrontmatter } from '@myst-theme/providers';
 import { ChevronRightIcon } from '@heroicons/react/24/solid';
 import classNames from 'classnames';
 import { HashLink } from './hashLink.js';
@@ -65,6 +65,26 @@ function getClasses(className?: string) {
 function capitalize(kind?: string) {
   if (!kind) return '';
   return kind.slice(0, 1).toUpperCase() + kind.slice(1);
+}
+
+/**
+ * The name shown in a proof's header, e.g. "Theorem".
+ *
+ * When the project sets a numbering template for the kind, the name is taken
+ * from it, so `numbering: {proof:property: {template: 'Fact %s'}}` gives a
+ * "Fact 1.2" header to match the "Fact 1.2" cross-references. A template that
+ * uses `{name}` is ignored, since the title is shown separately.
+ */
+export function getProofName(
+  kind?: string,
+  numbering?: Record<string, { template?: string } | undefined>,
+) {
+  const template = kind ? numbering?.[`proof:${kind}`]?.template : undefined;
+  if (template && !template.includes('{name}')) {
+    const name = template.replace(/%s|\{number\}/g, '').trim();
+    if (name) return name;
+  }
+  return capitalize(kind);
 }
 
 function getColorScheme(kind?: ProofKind | string): ColorScheme {
@@ -138,6 +158,7 @@ const iconClass = 'inline-block pl-2 mr-2 self-center flex-none';
 export function Proof({
   title,
   kind,
+  name,
   colorScheme = 'proof',
   dropdown,
   children,
@@ -148,6 +169,8 @@ export function Proof({
   title?: React.ReactNode;
   colorScheme?: ColorScheme;
   kind?: ProofKind;
+  /** The header name, if it differs from the capitalized kind */
+  name?: string;
   children: React.ReactNode;
   dropdown?: boolean;
   identifier?: string;
@@ -155,6 +178,7 @@ export function Proof({
   className?: string;
 }) {
   const { border, bg, text } = colorSchemes[colorScheme];
+  const heading = name ?? capitalize(kind);
   return (
     <WrapperElement
       id={identifier}
@@ -186,8 +210,8 @@ export function Proof({
             text,
           )}
         >
-          <HashLink id={identifier} kind={capitalize(kind)}>
-            {capitalize(kind)} {enumerator}
+          <HashLink id={identifier} kind={heading}>
+            {heading} {enumerator}
           </HashLink>{' '}
           {title && <>({title})</>}
         </div>
@@ -213,6 +237,7 @@ export const ProofRenderer: NodeRenderer<AdmonitionSpec> = ({ node, className })
   const classes = getClasses(node.class);
   const colorScheme = getColorScheme(node.kind as ProofKind);
   const isDropdown = classes.includes('dropdown');
+  const frontmatter = useFrontmatter();
 
   const useTitle = title?.type === 'admonitionTitle';
 
@@ -221,6 +246,7 @@ export const ProofRenderer: NodeRenderer<AdmonitionSpec> = ({ node, className })
       identifier={node.html_id}
       title={useTitle ? <MyST ast={[title]} /> : undefined}
       kind={node.kind as ProofKind}
+      name={getProofName(node.kind, frontmatter?.numbering)}
       enumerator={(node as any).enumerator}
       colorScheme={colorScheme}
       dropdown={isDropdown}
