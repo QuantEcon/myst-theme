@@ -1,0 +1,41 @@
+# QuantEcon myst-theme build identifier
+#
+# This file records *which QuantEcon-specific squash commits are in our
+# `main`*, and which `qe-vN` theme release carries them. Books log it by
+# pointing `site.template` at a release's `book-theme.zip`.
+#
+# Upstream status is tracked separately in `UPSTREAM-PRS.yml`, which plans
+# how these squash commits are bundled into upstream PRs. Cross-reference
+# is by commit SHA: each `merge_sha` here appears in some upstream
+# candidate's `commits` list there.
+#
+# Per-PR landing appends the feature to `merged_features` with its squash
+# `merge_sha` and `tag: null`. The `tag:` field is filled in when a
+# `qe-vN` release is cut over it (see README.md, "Cutting a qe-vN release").
+#
+# `upstream_base` is the latest upstream release tag that `main` contains;
+# `upstream_commit` is the exact `upstream/main` commit that `main` was
+# last synced to. Both are refreshed when a release is cut, from
+#   git describe --tags --match 'myst-to-react@*' \
+#     "$(git merge-base origin/main upstream/main)"
+#
+# `release_branch` exists only while the books' themes are built from a
+# build-only branch rather than from `main` (README.md, "Why release/v1.4
+# exists"). `qe-vN` tags are cut on that branch while it is set; remove the
+# block when the branch is retired.
+
+qe_version: qe-v1
+upstream_base: myst-to-react@1.4.1
+upstream_commit: 1c50887c
+
+release_branch:
+  name: release/v1.4
+  base: 1c3581db   # upstream's myst-to-react@1.4.1 release commit
+
+merged_features:
+  - id: 1
+    name: proof-header-numbering-template
+    description: Proof headers take their name from the kind's numbering template ("Fact %s" gives "Fact 2.2.1"), so the header matches cross-references; without a template the header is unchanged (QuantEcon/mystmd#149)
+    local_pr: 1
+    merge_sha: b13c14b5
+    tag: qe-v1
