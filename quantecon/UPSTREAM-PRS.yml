@@ -1,0 +1,57 @@
+# QuantEcon myst-theme → upstream PR tracker
+#
+# Each entry is a logical *upstream PR candidate* — a coherent change that
+# we plan to open as a PR against jupyter-book/myst-theme:main. A candidate
+# may span several `main` squash commits (a feature and its follow-up
+# fixes, or related features bundled into one review).
+#
+# `commits` is the ordered list of `main` squash SHAs to cherry-pick onto a
+# fresh `upstream/<topic>` branch off `upstream/main`. Order matters: list
+# them in dependency order so the cherry-pick replays cleanly.
+#
+# Relationship to VERSION.yml: each `merge_sha` in VERSION.yml's
+# `merged_features` appears in some candidate's `commits` here. VERSION.yml
+# is "what's in our main"; this file is "how we plan to ship it upstream."
+#
+# `type`:
+#   feature  — something we built that upstream may want.
+#   bug-fix  — a fix we wrote for a defect in upstream's own code. The
+#              defect itself is not an entry: it stays an issue until a fix
+#              lands on `main` (same rule as QuantEcon/mystmd's tracker).
+#
+# Status lifecycle:
+#   planned  — the fork PR is open, not every commit is on `main` yet
+#   pending  — all commits landed on main; upstream PR not yet opened
+#   open     — upstream PR open, under review
+#   merged   — upstream merged it (sync our main, then delete this entry's
+#              `upstream/<topic>` branch if still around)
+
+upstream_candidates:
+
+  - id: proof-header-numbering-template
+    title: Proof headers follow the kind's numbering template
+    type: feature
+    description: |
+      The proof header takes its name from `numbering['proof:<kind>'].template`
+      when one is set ("Fact %s" gives "Fact 2.2.1"), so the header agrees
+      with cross-references to it; the analogue of LaTeX's
+      \newtheorem{fact}{Fact}. Without a template the header is unchanged.
+    status: pending
+    commits:
+      - sha: b13c14b5
+        local_pr: 1
+        title: "Proof header follows the kind's numbering template"
+    depends_on: []
+    upstream:
+      issue: null      # the upstream report, if and when one is opened
+      pr: null
+      branch: null      # set when the upstream/<topic> branch is pushed
+      merged_sha: null
+    notes: |
+      Requested in QuantEcon/mystmd#149 for A Primer in Econometric Theory,
+      whose 144 facts are {prf:property} with template "Fact %s".
+      `proof.tsx` is identical on upstream main and on 1c3581db, so the
+      squash commit cherry-picks cleanly onto both `upstream/<topic>` and
+      `release/v1.4`. It reads only `template`: the `label` numbering field
+      exists only in the QuantEcon/mystmd fork. Carries a changeset
+      (`myst-to-react: patch`) for upstream.
