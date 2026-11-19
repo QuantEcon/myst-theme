@@ -13,7 +13,7 @@ It follows the rules of the [QuantEcon/mystmd fork](https://github.com/QuantEcon
 | [`VERSION.yml`](VERSION.yml)           | _What QuantEcon squash commits are in our `main`, and which `qe-vN` theme release carries them?_                                                                    |
 | [`UPSTREAM-PRS.yml`](UPSTREAM-PRS.yml) | _How do we plan to ship those squash commits upstream?_ Bundles squashes into upstream PR candidates, records cherry-pick order, tracks upstream PR / merge status. |
 
-Keep them in sync — cross-reference is by squash-commit SHA. They are maintained exactly as in the mystmd fork: every feature or bug fix that lands on `main` gets a `merged_features` row in `VERSION.yml` and a place in some candidate's `commits` in `UPSTREAM-PRS.yml`. Status runs `planned` → `pending` → `open` → `merged`.
+Keep them in sync — cross-reference is by squash-commit SHA. They are maintained exactly as in the mystmd fork. `UPSTREAM-PRS.yml` holds **only implemented work**: squash commits on `main` that we plan to upstream. Every feature or bug fix that lands on `main` gets a `merged_features` row in `VERSION.yml` and, unless it is fork-only, a place in some candidate's `commits` in `UPSTREAM-PRS.yml`. Anything not yet implemented, whether a planned feature or a diagnosed defect, is an issue in this fork until its commit lands, labelled `upstream` when it concerns upstream's own code. A fix goes upstream only after it lands on `main` and has an entry in `UPSTREAM-PRS.yml`. Status runs `pending` → `open` → `merged`.
 
 ## How the books use the fork
 

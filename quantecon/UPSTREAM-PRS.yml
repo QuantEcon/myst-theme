@@ -5,13 +5,19 @@
 # may span several `main` squash commits (a feature and its follow-up
 # fixes, or related features bundled into one review).
 #
+# Only implemented work goes here: every commit an entry lists is on
+# `main`. Work not yet implemented, a planned feature or a defect with no
+# fix, is an issue in this fork, labelled `upstream` when it concerns
+# upstream's own code. Fork-only changes get no entry.
+#
 # `commits` is the ordered list of `main` squash SHAs to cherry-pick onto a
 # fresh `upstream/<topic>` branch off `upstream/main`. Order matters: list
 # them in dependency order so the cherry-pick replays cleanly.
 #
 # Relationship to VERSION.yml: each `merge_sha` in VERSION.yml's
-# `merged_features` appears in some candidate's `commits` here. VERSION.yml
-# is "what's in our main"; this file is "how we plan to ship it upstream."
+# `merged_features` that we plan to upstream appears in some candidate's
+# `commits` here; fork-only rows appear in none. VERSION.yml is "what's in
+# our main"; this file is "how we plan to ship it upstream."
 #
 # `type`:
 #   feature  — something we built that upstream may want.
@@ -20,7 +26,6 @@
 #              lands on `main` (same rule as QuantEcon/mystmd's tracker).
 #
 # Status lifecycle:
-#   planned  — the fork PR is open, not every commit is on `main` yet
 #   pending  — all commits landed on main; upstream PR not yet opened
 #   open     — upstream PR open, under review
 #   merged   — upstream merged it (sync our main, then delete this entry's
